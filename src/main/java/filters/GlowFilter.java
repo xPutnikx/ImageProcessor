@@ -15,9 +15,14 @@ public class GlowFilter extends GaussianFilter {
 
     static final long serialVersionUID = 5377089073023183684L;
 
-    private float amount = 0.5f;
+    private float amount = 2.5f;
 
     public GlowFilter() {
+        radius = 2;
+    }
+
+    public GlowFilter(float amount) {
+        setAmount(amount);
         radius = 2;
     }
 

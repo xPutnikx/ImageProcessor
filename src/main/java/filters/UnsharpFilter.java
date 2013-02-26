@@ -18,6 +18,11 @@ public class UnsharpFilter extends GaussianFilter {
     private float amount = 0.5f;
     private int threshold = 1;
 
+    public UnsharpFilter(float amount, int threshold) {
+        this.amount = amount;
+        this.threshold = threshold;
+    }
+
     public UnsharpFilter() {
         radius = 2;
     }

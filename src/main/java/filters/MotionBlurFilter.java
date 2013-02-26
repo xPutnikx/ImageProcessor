@@ -10,16 +10,25 @@ import java.awt.image.BufferedImage;
 
 public class MotionBlurFilter extends AbstractBufferedImageOp {
 
-    public final static int LINEAR = 0;
-    public final static int RADIAL = 1;
-    public final static int ZOOM = 2;
+    public final static int LINEAR = 2;
+    public final static int RADIAL = 2;
+    public final static int ZOOM = 5;
 
-    private float angle = 0.0f;
-    private float falloff = 1.0f;
-    private float distance = 1.0f;
-    private float zoom = 0.0f;
-    private float rotation = 0.0f;
+    private float angle = 4.0f;
+    private float falloff = 8.0f;
+    private float distance = 4.0f;
+    private float zoom = 6.0f;
+    private float rotation = 7.0f;
     private boolean wrapEdges = false;
+
+    public MotionBlurFilter(float angle, float falloff, float distance, float zoom, float rotation, boolean wrapEdges) {
+        this.angle = angle;
+        this.falloff = falloff;
+        this.distance = distance;
+        this.zoom = zoom;
+        this.rotation = rotation;
+        this.wrapEdges = wrapEdges;
+    }
 
     public MotionBlurFilter() {
     }

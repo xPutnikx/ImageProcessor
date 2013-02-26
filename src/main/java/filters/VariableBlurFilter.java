@@ -15,6 +15,12 @@ public class VariableBlurFilter extends AbstractBufferedImageOp {
     private int iterations = 1;
     private BufferedImage blurMask;
 
+    public VariableBlurFilter(int hRadius, int vRadius, int iterations) {
+        this.hRadius = hRadius;
+        this.vRadius = vRadius;
+        this.iterations = iterations;
+    }
+
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();
         int height = src.getHeight();

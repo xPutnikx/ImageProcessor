@@ -1,9 +1,7 @@
 package filters; /**
- * Created with IntelliJ IDEA.
  * User: v.hudnitsky
  * Date: 23.02.13
  * Time: 0:45
- * To change this template use File | Settings | File Templates.
  */
 
 import com.jhlabs.image.ImageMath;
@@ -19,9 +17,8 @@ import java.awt.image.Kernel;
  */
 public class GaussianFilter extends ConvolveFilter {
 
-    static final long serialVersionUID = 5377089073023183684L;
 
-    protected float radius;
+    protected float radius=1;
     protected Kernel kernel;
 
     /**
@@ -68,7 +65,7 @@ public class GaussianFilter extends ConvolveFilter {
         src.getRGB( 0, 0, width, height, inPixels, 0, width );
 
         convolveAndTranspose(kernel, inPixels, outPixels, width, height, alpha, CLAMP_EDGES);
-        convolveAndTranspose(kernel, outPixels, inPixels, height, width, alpha, CLAMP_EDGES);
+        convolveAndTranspose(kernel, outPixels, inPixels, width, height, alpha, CLAMP_EDGES);
 
         dst.setRGB( 0, 0, width, height, inPixels, 0, width );
         return dst;

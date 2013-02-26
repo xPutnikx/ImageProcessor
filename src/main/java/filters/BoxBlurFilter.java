@@ -6,10 +6,10 @@ import com.jhlabs.image.ImageMath;
 import java.awt.image.BufferedImage;
 
 public class BoxBlurFilter extends AbstractBufferedImageOp {
-
-    private int hRadius;
-    private int vRadius;
-    private int iterations = 1;
+    //default variables
+    private int hRadius=50;
+    private int vRadius=50;
+    private int iterations = 8;
 
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();

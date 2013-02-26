@@ -6,6 +6,9 @@
 
 import com.jhlabs.image.AbstractBufferedImageOp;
 import filters.*;
+import process.CreateBWImage;
+import process.CreateGreyLevel;
+import process.JPEGCompression;
 
 import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
@@ -32,16 +35,17 @@ public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionLis
     private File file = null;
     // A JSlider to select the slice to be displayed.
     private JSlider sliceSlider;
-    private final GlowFilter glowFilter = new GlowFilter();
+    private final GlowFilter glowFilter = new GlowFilter(3.0f);
     private final BoxBlurFilter boxBlurFilter = new BoxBlurFilter();
-    private final GaussianFilter gaussianFilter = new GaussianFilter();
-    private final LensBlurFilter lensBlurFilter = new LensBlurFilter();
-    private final MotionBlurFilter motionBlurFilter = new MotionBlurFilter();
-    private final RaysFilter raysFilter = new RaysFilter();
-    private final ShadowFilter shadowFilter = new ShadowFilter();
-    private final SmartBlurFilter smartBlurFilter = new SmartBlurFilter();
-    private final UnsharpFilter unsharpFilter = new UnsharpFilter();
-    private final VariableBlurFilter variableBlurFilter = new VariableBlurFilter();
+    private final GaussianFilter gaussianFilter = new GaussianFilter(7);
+    private final LensBlurFilter lensBlurFilter = new LensBlurFilter(10,2,192,10,5);
+    private final MotionBlurFilter motionBlurFilter = new MotionBlurFilter(5,8,6,6,7,false);
+    private final RaysFilter raysFilter = new RaysFilter(1,3,3,false);
+    private final ShadowFilter shadowFilter = new ShadowFilter(8,8,9,4.0f);
+    private final SmartBlurFilter smartBlurFilter = new SmartBlurFilter(6,6,11);
+    private final UnsharpFilter unsharpFilter = new UnsharpFilter(2,3);
+    private final VariableBlurFilter variableBlurFilter = new VariableBlurFilter(5,5,8);
+    private final MotionBlurOp motionBlurOp = new MotionBlurOp(5,5,8,4);
 
     /**
      * The constructor of the class, which sets the frame appearance and creates an
@@ -111,7 +115,7 @@ public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionLis
             }
         };
         List<AbstractBufferedImageOp> filterList = new ArrayList<AbstractBufferedImageOp>();
-        filterList.add(glowFilter);
+        filterList.add(glowFilter);    //yes
         filterList.add(boxBlurFilter); //not
         filterList.add(gaussianFilter); //not
         filterList.add(lensBlurFilter); //yes
@@ -147,6 +151,7 @@ public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionLis
     }
 
     public void useFilter(AbstractBufferedImageOp filter) throws IOException {
+
         BufferedImage image = ImageIO.read(file);
         BufferedImage imageResult = null;
         imageResult = filter.filter(image, imageResult);

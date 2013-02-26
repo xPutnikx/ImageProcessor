@@ -8,10 +8,10 @@ import java.awt.image.BufferedImage;
 
 public class MotionBlurOp extends AbstractBufferedImageOp {
     private float centreX = 0.5f, centreY = 0.5f;
-    private float distance;
-    private float angle;
-    private float rotation;
-    private float zoom;
+    private float distance = 10;
+    private float angle = 7;
+    private float rotation=3;
+    private float zoom=4;
 
     public MotionBlurOp() {
     }

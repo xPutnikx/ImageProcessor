@@ -14,10 +14,26 @@ import java.awt.image.BufferedImage;
 public class RaysFilter extends MotionBlurOp {
 
     private float opacity = 1.0f;
-    private float threshold = 0.0f;
+    private float threshold = 3.0f;
     private float strength = 0.5f;
     private boolean raysOnly = false;
     private Colormap colormap;
+
+    public RaysFilter(float opacity, float threshold, float strength, boolean raysOnly) {
+        this.opacity = opacity;
+        this.threshold = threshold;
+        this.strength = strength;
+        this.raysOnly = raysOnly;
+    }
+
+    public RaysFilter(float distance, float angle, float rotation, float zoom, float opacity, float threshold, float strength, boolean raysOnly, Colormap colormap) {
+        super(distance, angle, rotation, zoom);
+        this.opacity = opacity;
+        this.threshold = threshold;
+        this.strength = strength;
+        this.raysOnly = raysOnly;
+        this.colormap = colormap;
+    }
 
     public RaysFilter() {
     }

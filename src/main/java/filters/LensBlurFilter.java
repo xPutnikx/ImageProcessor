@@ -17,10 +17,21 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
     private float angle = 0;
     private int sides = 5;
 
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
+
     /**
      * Set the radius of the kernel, and hence the amount of blur.
      * @param radius the radius of the blur in pixels.
      */
+    public LensBlurFilter(float radius,float bloom,float bloomThreshold,float angle,int sides){
+        setRadius(radius);
+        setBloom(bloom);
+        setBloomThreshold(bloomThreshold);
+        setAngle(angle);
+        setSides(sides);
+    }
     public void setRadius(float radius) {
         this.radius = radius;
     }
