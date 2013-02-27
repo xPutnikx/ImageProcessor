@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
-public class DisplayJAIWithPixelInfo extends DisplayJAI
+public class ImageProcessor extends DisplayJAI
 {
     private StringBuffer pixelInfo; // The pixel information (formatted in a StringBuffer).
     private double[] dpixel; // The pixel information as an array of doubles.
@@ -22,23 +22,17 @@ public class DisplayJAIWithPixelInfo extends DisplayJAI
     private short[][] lutData; // Will contain the look-up table data if isIndexed is true.
     protected int width, height; // The dimensions of the image
 
-    /**
-     * The constructor of the class, which creates the arrays and instances needed
-     * to obtain the image data and registers the class to listen to mouse motion events.
-     * @param image a RenderedImage for display
-     */
     static
     {
         System.setProperty("com.sun.media.jai.disableMediaLib", "true");
     }
-    public DisplayJAIWithPixelInfo(RenderedImage image)
+    public ImageProcessor(RenderedImage image)
     {
-        super(image); // Calls the constructor for DisplayJAI.
-        readIterator = RandomIterFactory.create(image, null); // Creates the iterator.
-        // Get some data about the image
+        super(image);
+        readIterator = RandomIterFactory.create(image, null);
         width = image.getWidth();
         height = image.getHeight();
-        int dataType = image.getSampleModel().getDataType(); // Gets the data type
+        int dataType = image.getSampleModel().getDataType();
         switch (dataType)
         {
             case DataBuffer.TYPE_BYTE:
@@ -52,26 +46,19 @@ public class DisplayJAIWithPixelInfo extends DisplayJAI
                 isDoubleType = true;
                 break;
         }
-        // Depending on the image data type, allocate the double or the int array.
         if (isDoubleType)
             dpixel = new double[image.getSampleModel().getNumBands()];
         else
             ipixel = new int[image.getSampleModel().getNumBands()];
-        // Is the image color model indexed?
         isIndexed = (image.getColorModel() instanceof IndexColorModel);
         if (isIndexed)
         {
-            // Retrieve the index color model of the image.
             IndexColorModel icm = (IndexColorModel) image.getColorModel();
-            // Get the number of elements in each band of the colormap.
             int mapSize = icm.getMapSize();
-            // Allocate an array for the lookup table data.
             byte[][] templutData = new byte[3][mapSize];
-            // Load the lookup table data from the IndexColorModel.
             icm.getReds(templutData[0]);
             icm.getGreens(templutData[1]);
             icm.getBlues(templutData[2]);
-            // Load the lookup table data into a short array to avoid negative numbers.
             lutData = new short[3][mapSize];
             for (int entry = 0; entry < mapSize; entry++)
             {
@@ -82,21 +69,14 @@ public class DisplayJAIWithPixelInfo extends DisplayJAI
                 lutData[2][entry] = templutData[2][entry] > 0 ?
                         templutData[2][entry] : (short) (templutData[2][entry] + 256);
             }
-        } // end if indexed
-        // Registers the mouse motion listener.
+        }
         addMouseMotionListener(this);
-        // Create the StringBuffer instance for the pixel information.
         pixelInfo = new StringBuffer(50);
     }
 
-    /**
-     * This method will be called when the mouse is moved over the image being
-     * displayed.
-     * @param me the mouse event that caused the execution of this method.
-     */
     public void mouseMoved(MouseEvent me)
     {
-        pixelInfo.setLength(0); // Clear the StringBuffer
+        pixelInfo.setLength(0);
         int x = me.getX();
         int y = me.getY();
         if ((x >= width) || (y >= height))
@@ -104,42 +84,35 @@ public class DisplayJAIWithPixelInfo extends DisplayJAI
             pixelInfo.append("No data!");
             return;
         }
-        if (isDoubleType) // Process the pixel as an array of double values
+        if (isDoubleType)
         {
             pixelInfo.append("(floating-point data) ");
-            readIterator.getPixel(me.getX(), me.getY(), dpixel); // Read the pixel's values
+            readIterator.getPixel(me.getX(), me.getY(), dpixel);
             for (int b = 0; b < dpixel.length; b++)
-                pixelInfo.append(dpixel[b]+","); // Append to the StringBuffer
-            pixelInfo = pixelInfo.deleteCharAt(pixelInfo.length() - 1); // Erase last comma
+                pixelInfo.append(dpixel[b]+",");
+            pixelInfo = pixelInfo.deleteCharAt(pixelInfo.length() - 1);
         }
-        else // Pixel type is not floating point, will be processed as integers.
+        else
         {
-            if (isIndexed) // If color model is indexed
+            if (isIndexed)
             {
                 pixelInfo.append("(integer data with colormap) ");
-                readIterator.getPixel(me.getX(), me.getY(), ipixel); // Read the pixel's values
-                // Assume ipixel.length = 1
+                readIterator.getPixel(me.getX(), me.getY(), ipixel);
                 pixelInfo.append("Index: "+ipixel[0]);
-                // Add also the RGB entry from the LUT.
                 pixelInfo.append(" RGB:"+lutData[0][ipixel[0]]+","+lutData[1][ipixel[0]]+","+
                         lutData[2][ipixel[0]]);
             }
             else
-            // Pixels are of integer type, but not indexed
             {
                 pixelInfo.append("(integer data) ");
-                readIterator.getPixel(me.getX(), me.getY(), ipixel); // Read the pixel's values
+                readIterator.getPixel(me.getX(), me.getY(), ipixel);
                 for (int b = 0; b < ipixel.length; b++)
-                    pixelInfo.append(ipixel[b] + ","); // Append to the StringBuffer
-                pixelInfo = pixelInfo.deleteCharAt(pixelInfo.length() - 1); // Erase last comma
+                    pixelInfo.append(ipixel[b] + ",");
+                pixelInfo = pixelInfo.deleteCharAt(pixelInfo.length() - 1);
             }
-        } // Pixel is integer type
-    } // end of method mouseMoved
+        }
+    }
 
-    /**
-     * This method allows access to the pixel info which was obtained in the mouseMoved method.
-     * @return the pixel information, formatted as a string
-     */
     public String getPixelInfo()
     {
         return pixelInfo.toString();

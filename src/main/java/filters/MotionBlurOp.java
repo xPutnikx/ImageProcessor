@@ -1,4 +1,9 @@
 package filters;
+/**
+ * User: v.hudnitsky
+ * Date: 22.02.13
+ * Time: 13:45
+ */
 
 import com.jhlabs.image.AbstractBufferedImageOp;
 
@@ -126,7 +131,7 @@ public class MotionBlurOp extends AbstractBufferedImageOp {
             g.setComposite( AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.5f ) );
 
             g.translate( cx+translateX, cy+translateY );
-            g.scale( 1.0001+scale, 1.0001+scale );  // The .0001 works round a bug on Windows where drawImage throws an ArrayIndexOutofBoundException
+            g.scale( 1.0001+scale, 1.0001+scale );
             if ( rotation != 0 )
                 g.rotate( rotate );
             g.translate( -cx, -cy );

@@ -1,4 +1,5 @@
-package process; /**
+package process;
+/**
  * User: v.hudnitsky
  * Date: 21.02.13
  * Time: 15:33

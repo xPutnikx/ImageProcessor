@@ -1,4 +1,9 @@
 package filters;
+/**
+ * User: v.hudnitsky
+ * Date: 22.02.13
+ * Time: 15:22
+ */
 
 import com.jhlabs.image.AbstractBufferedImageOp;
 import com.jhlabs.image.ImageMath;

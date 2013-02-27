@@ -1,4 +1,9 @@
 package filters;
+/**
+ * User: v.hudnitsky
+ * Date: 21.02.13
+ * Time: 17:21
+ */
 
 import com.jhlabs.image.AbstractBufferedImageOp;
 
@@ -97,7 +102,6 @@ public class VariableBlurFilter extends AbstractBufferedImageOp {
             }
 
             for ( int x = 0; x < width; x++ ) {
-                // Get the blur radius at x, y
                 int ra;
                 if ( blurMask != null ) {
                     if ( pass == 1 )
@@ -136,7 +140,6 @@ public class VariableBlurFilter extends AbstractBufferedImageOp {
                 tr += r[i1] - r[i2];
                 tg += g[i1] - g[i2];
                 tb += b[i1] - b[i2];
-//if ( y == 0 && pass == 1 )System.out.println(x+": "+i1+" "+i2+" "+r[i1]+" "+r[i2]+" "+tr);
                 out[ outIndex ] = ((ta/divisor) << 24) | ((tr/divisor) << 16) | ((tg/divisor) << 8) | (tb/divisor);
 
                 outIndex += height;

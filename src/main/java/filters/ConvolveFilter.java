@@ -1,11 +1,9 @@
 package filters;
 
 /**
- * Created with IntelliJ IDEA.
  * User: v.hudnitsky
  * Date: 23.02.13
  * Time: 0:48
- * To change this template use File | Settings | File Templates.
  */
 
 import com.jhlabs.image.AbstractBufferedImageOp;
@@ -18,10 +16,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Kernel;
 
-/**
- * A filter which applies a convolution kernel to an image.
- * @author Jerry Huxtable
- */
 public class ConvolveFilter extends AbstractBufferedImageOp {
 
     static final long serialVersionUID = 2239251672685254626L;
@@ -34,27 +28,14 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
     public boolean alpha = true;
     private int edgeAction = CLAMP_EDGES;
 
-    /**
-     * Construct a filter with a null kernel. This is only useful if you're going to change the kernel later on.
-     */
     public ConvolveFilter() {
         this(new float[9]);
     }
 
-    /**
-     * Construct a filter with the given 3x3 kernel.
-     * @param matrix an array of 9 floats containing the kernel
-     */
     public ConvolveFilter(float[] matrix) {
         this(new Kernel(3, 3, matrix));
     }
 
-    /**
-     * Construct a filter with the given kernel.
-     * @param rows	the number of rows in the kernel
-     * @param cols	the number of columns in the kernel
-     * @param matrix	an array of rows*cols floats containing the kernel
-     */
     public ConvolveFilter(int rows, int cols, float[] matrix) {
         this(new Kernel(cols, rows, matrix));
     }
@@ -130,9 +111,6 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
             convolveHV(kernel, inPixels, outPixels, width, height, alpha, edgeAction);
     }
 
-    /**
-     * Convolve with a 2D kernel
-     */
     public static void convolveHV(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha, int edgeAction) {
         int index = 0;
         float[] matrix = kernel.getKernelData( null );
@@ -187,9 +165,7 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
         }
     }
 
-    /**
-     * Convolve with a kernel consisting of one row
-     */
+
     public static void convolveH(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha, int edgeAction) {
         int index = 0;
         float[] matrix = kernel.getKernelData( null );
@@ -233,9 +209,6 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
         }
     }
 
-    /**
-     * Convolve with a kernel consisting of one column
-     */
     public static void convolveV(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha, int edgeAction) {
         int index = 0;
         float[] matrix = kernel.getKernelData( null );

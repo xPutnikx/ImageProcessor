@@ -16,8 +16,6 @@ import javax.media.jai.PlanarImage;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -25,44 +23,32 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionListener {
+public class ImageProcessorApp extends JFrame {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
-    private JLabel label; // Will contain information on the pixels of the image being displayed.
-    private DisplayJAIWithPixelInfo dj; // An instance of the display component.
+    private ImageProcessor dj;
     public static Container container;
     private JFileChooser fileChooser = null;
     private File file = null;
-    // A JSlider to select the slice to be displayed.
     private JSlider sliceSlider;
     private final GlowFilter glowFilter = new GlowFilter(3.0f);
-    private final BoxBlurFilter boxBlurFilter = new BoxBlurFilter();
+    private final BoxBlurFilter boxBlurFilter = new BoxBlurFilter(20,20,3);
     private final GaussianFilter gaussianFilter = new GaussianFilter(7);
     private final LensBlurFilter lensBlurFilter = new LensBlurFilter(10,2,192,10,5);
     private final MotionBlurFilter motionBlurFilter = new MotionBlurFilter(5,8,6,6,7,false);
-    private final RaysFilter raysFilter = new RaysFilter(1,3,3,false);
-    private final ShadowFilter shadowFilter = new ShadowFilter(8,8,9,4.0f);
     private final SmartBlurFilter smartBlurFilter = new SmartBlurFilter(6,6,11);
     private final UnsharpFilter unsharpFilter = new UnsharpFilter(2,3);
     private final VariableBlurFilter variableBlurFilter = new VariableBlurFilter(5,5,8);
     private final MotionBlurOp motionBlurOp = new MotionBlurOp(5,5,8,4);
 
-    /**
-     * The constructor of the class, which sets the frame appearance and creates an
-     * instance of the display component.
-     */
-    public DisplayJAIWithPixelInfoApp() {
+    public ImageProcessorApp() {
         setTitle("Image Processing");
         Toolkit kit = Toolkit.getDefaultToolkit();
         setLocation((kit.getScreenSize().width - WIDTH) / 2, (kit.getScreenSize().height - HEIGHT) / 2);
         setExtendedState(MAXIMIZED_BOTH);
         setSize(WIDTH, HEIGHT);
-        // Get the JFrame's ContentPane.
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
-        // Create an instance of DisplayJAIWithPixelInfo and adds it to the content pane.
-
-        // Add a text label with the image information.
         container = this.getContentPane();
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -74,7 +60,7 @@ public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionLis
                     fileChooser = new JFileChooser();
                     fileChooser.setCurrentDirectory(new File("."));
                 }
-                if (fileChooser.showOpenDialog(DisplayJAIWithPixelInfoApp.this) == JFileChooser.APPROVE_OPTION) {
+                if (fileChooser.showOpenDialog(ImageProcessorApp.this) == JFileChooser.APPROVE_OPTION) {
                     try {
                         file = fileChooser.getSelectedFile();
                         repaint(file.getPath());
@@ -90,7 +76,7 @@ public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionLis
                 try {
                     file = CreateBWImage.createBWImage(file);
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    e.printStackTrace();
                 }
                 repaint(file.getPath());
             }
@@ -100,7 +86,7 @@ public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionLis
                 try {
                     file = CreateGreyLevel.createGreyLevel(file);
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    e.printStackTrace();
                 }
                 repaint(file.getPath());
             }
@@ -110,21 +96,19 @@ public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionLis
                 try {
                     JPEGCompression.jpegCompression(file);
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    e.printStackTrace();
                 }
             }
         };
         List<AbstractBufferedImageOp> filterList = new ArrayList<AbstractBufferedImageOp>();
-        filterList.add(glowFilter);    //yes
-        filterList.add(boxBlurFilter); //not
-        filterList.add(gaussianFilter); //not
-        filterList.add(lensBlurFilter); //yes
-        filterList.add(motionBlurFilter); //not
-        filterList.add(raysFilter);   //not
-        filterList.add(shadowFilter);    //not
-        filterList.add(smartBlurFilter); //not
-        filterList.add(unsharpFilter);   //not
-        filterList.add(variableBlurFilter); //not
+        filterList.add(glowFilter);
+        filterList.add(boxBlurFilter);
+        filterList.add(gaussianFilter);
+        filterList.add(lensBlurFilter);
+        filterList.add(motionBlurFilter);
+        filterList.add(smartBlurFilter);
+        filterList.add(unsharpFilter);
+        filterList.add(variableBlurFilter);
         Iterator<AbstractBufferedImageOp> filterIterator = filterList.iterator();
         while(filterIterator.hasNext()){
             final AbstractBufferedImageOp filter = filterIterator.next();
@@ -133,7 +117,7 @@ public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionLis
                     try {
                         useFilter(filter);
                     } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        e.printStackTrace();
                     }
 
                 }
@@ -162,13 +146,7 @@ public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionLis
         ImageIO.write(imageResult, "png", resultFile);
         repaint(resultFile.getPath());
     }
-    public void useBoxBlurFilter() throws IOException {
-        BoxBlurFilter boxBlurFilter = new BoxBlurFilter();
-        BufferedImage image = ImageIO.read(file);
-        BufferedImage imageResult = null;
-        imageResult = boxBlurFilter.filter(image, imageResult);
-        ioFile(imageResult);
-    }
+
     private void repaint(String path){
         container.removeAll();
         container.repaint();
@@ -176,29 +154,17 @@ public class DisplayJAIWithPixelInfoApp extends JFrame implements MouseMotionLis
         validate();
         repaint();
     }
-    /**
-     * This method will not do anything - it is here just to keep the
-     * MouseMotionListener interface happy.
-     */
-    public void mouseDragged(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 
     public static void main(String[] args) {
-        DisplayJAIWithPixelInfoApp frame = new DisplayJAIWithPixelInfoApp();
+        ImageProcessorApp frame = new ImageProcessorApp();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
     public void build(String path) {
         PlanarImage image = JAI.create("fileload", path);
-        dj = new DisplayJAIWithPixelInfo(image);
+        dj = new ImageProcessor(image);
         Container contentPane = getContentPane();
         contentPane.add(new JScrollPane(dj), BorderLayout.CENTER);
-        dj.addMouseMotionListener(this);
     }
 }

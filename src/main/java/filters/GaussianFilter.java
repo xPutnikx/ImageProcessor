@@ -10,45 +10,25 @@ import com.jhlabs.image.PixelUtils;
 import java.awt.image.BufferedImage;
 import java.awt.image.Kernel;
 
-/**
- * A filter which applies Gaussian blur to an image. This is a subclass of ConvolveFilter
- * which simply creates a kernel with a Gaussian distribution for blurring.
- * @author Jerry Huxtable
- */
 public class GaussianFilter extends ConvolveFilter {
 
 
     protected float radius=1;
     protected Kernel kernel;
 
-    /**
-     * Construct a Gaussian filter
-     */
     public GaussianFilter() {
         this(2);
     }
 
-    /**
-     * Construct a Gaussian filter
-     * @param radius blur radius in pixels
-     */
     public GaussianFilter(float radius) {
         setRadius(radius);
     }
 
-    /**
-     * Set the radius of the kernel, and hence the amount of blur. The bigger the radius, the longer this filter will take.
-     * @param radius the radius of the blur in pixels.
-     */
     public void setRadius(float radius) {
         this.radius = radius;
         kernel = makeKernel(radius);
     }
 
-    /**
-     * Get the radius of the kernel.
-     * @return the radius
-     */
     public float getRadius() {
         return radius;
     }
@@ -115,9 +95,6 @@ public class GaussianFilter extends ConvolveFilter {
         }
     }
 
-    /**
-     * Make a Gaussian blur kernel.
-     */
     public static Kernel makeKernel(float radius) {
         int r = (int)Math.ceil(radius);
         int rows = r*2+1;

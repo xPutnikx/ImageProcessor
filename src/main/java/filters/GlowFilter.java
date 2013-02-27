@@ -1,16 +1,15 @@
-package filters;/*
-** Copyright 2005 Huxtable.com. All rights reserved.
-*/
+package filters;
+/**
+ * User: v.hudnitsky
+ * Date: 23.02.13
+ * Time: 02:16
+ */
 
 
 import com.jhlabs.image.PixelUtils;
 
 import java.awt.image.BufferedImage;
 
-/**
- * A filter which subtracts Gaussian blur from an image, sharpening it.
- * @author Jerry Huxtable
- */
 public class GlowFilter extends GaussianFilter {
 
     static final long serialVersionUID = 5377089073023183684L;

@@ -1,4 +1,9 @@
 package filters;
+/**
+ * User: v.hudnitsky
+ * Date: 21.02.13
+ * Time: 21:35
+ */
 
 import com.jhlabs.image.AbstractBufferedImageOp;
 import com.jhlabs.image.PixelUtils;
@@ -37,9 +42,6 @@ public class SmartBlurFilter extends AbstractBufferedImageOp {
         return dst;
     }
 
-    /**
-     * Convolve with a kernel consisting of one row
-     */
     public void thresholdBlur(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha) {
         int index = 0;
         float[] matrix = kernel.getKernelData( null );

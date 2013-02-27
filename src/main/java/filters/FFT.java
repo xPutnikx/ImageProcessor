@@ -1,4 +1,9 @@
 package filters;
+/**
+ * User: v.hudnitsky
+ * Date: 23.02.13
+ * Time: 03:29
+ */
 
 public class FFT {
 
@@ -94,7 +99,6 @@ public class FFT {
         float[] rtemp = new float[n];
         float[] itemp = new float[n];
 
-        // filters.FFT the rows
         for ( int y = 0; y < rows; y++ ) {
             int offset = y*cols;
             System.arraycopy( real, offset, rtemp, 0, cols );
@@ -104,7 +108,6 @@ public class FFT {
             System.arraycopy( itemp, 0, imag, offset, cols );
         }
 
-        // filters.FFT the columns
         for ( int x = 0; x < cols; x++ ) {
             int index = x;
             for ( int y = 0; y < rows; y++ ) {

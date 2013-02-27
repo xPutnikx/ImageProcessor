@@ -1,6 +1,9 @@
-package filters;/*
-** Copyright 2005 Huxtable.com. All rights reserved.
-*/
+package filters;
+/**
+ * User: v.hudnitsky
+ * Date: 22.02.13
+ * Time: 19:31
+ */
 
 
 import com.jhlabs.image.AbstractBufferedImageOp;
@@ -21,10 +24,6 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
         this.angle = angle;
     }
 
-    /**
-     * Set the radius of the kernel, and hence the amount of blur.
-     * @param radius the radius of the blur in pixels.
-     */
     public LensBlurFilter(float radius,float bloom,float bloomThreshold,float angle,int sides){
         setRadius(radius);
         setBloom(bloom);
@@ -36,10 +35,6 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
         this.radius = radius;
     }
 
-    /**
-     * Get the radius of the kernel.
-     * @return the radius
-     */
     public float getRadius() {
         return radius;
     }
@@ -99,7 +94,7 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
         int h = rows;
 
         tileWidth = w;
-        tileHeight = h;//FIXME-tileWidth, w, and cols are always all the same
+        tileHeight = h;
 
         FFT fft = new FFT( Math.max(log2rows, log2cols) );
 
@@ -107,8 +102,6 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
         float[][] mask = new float[2][w*h];
         float[][] gb = new float[2][w*h];
         float[][] ar = new float[2][w*h];
-
-        // Create the kernel
         double polyAngle = Math.PI/sides;
         double polyScale = 1.0f / Math.cos(polyAngle);
         double r2 = radius*radius;
@@ -139,7 +132,6 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
             }
         }
 
-        // Normalize the kernel
         i = 0;
         for ( int y = 0; y < h; y++ ) {
             for ( int x = 0; x < w; x++ ) {
@@ -152,9 +144,6 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
 
         for ( int tileY = -iradius; tileY < height; tileY += tileHeight-2*iradius ) {
             for ( int tileX = -iradius; tileX < width; tileX += tileWidth-2*iradius ) {
-//                System.out.println("Tile: "+tileX+" "+tileY+" "+tileWidth+" "+tileHeight);
-
-                // Clip the tile to the image bounds
                 int tx = tileX, ty = tileY, tw = tileWidth, th = tileHeight;
                 int fx = 0, fy = 0;
                 if ( tx < 0 ) {
@@ -173,7 +162,6 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
                     th = height-ty;
                 src.getRGB( tx, ty, tw, th, rgb, fy*w+fx, w );
 
-                // Create a float array from the pixels. Any pixels off the edge of the source image get duplicated from the edge.
                 i = 0;
                 for ( int y = 0; y < h; y++ ) {
                     int imageY = y+tileY;
@@ -201,16 +189,12 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
                         float g = ((rgb[k] >> 8) & 0xff);
                         float b = (rgb[k] & 0xff);
 
-                        // Bloom...
                         if ( r > bloomThreshold )
                             r *= bloom;
-//							r = bloomThreshold + (r-bloomThreshold) * bloom;
                         if ( g > bloomThreshold )
                             g *= bloom;
-//							g = bloomThreshold + (g-bloomThreshold) * bloom;
                         if ( b > bloomThreshold )
                             b *= bloom;
-//							b = bloomThreshold + (b-bloomThreshold) * bloom;
 
                         ar[1][i] = r;
                         gb[0][i] = g;
@@ -221,11 +205,9 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
                     }
                 }
 
-                // Transform into frequency space
                 fft.transform2D( ar[0], ar[1], cols, rows, true );
                 fft.transform2D( gb[0], gb[1], cols, rows, true );
 
-                // Multiply the transformed pixels by the transformed kernel
                 i = 0;
                 for ( int y = 0; y < h; y++ ) {
                     for ( int x = 0; x < w; x++ ) {
@@ -244,16 +226,13 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
                     }
                 }
 
-                // Transform back
                 fft.transform2D( ar[0], ar[1], cols, rows, false );
                 fft.transform2D( gb[0], gb[1], cols, rows, false );
 
-                // Convert back to RGB pixels, with quadrant remapping
                 int row_flip = w >> 1;
                 int col_flip = h >> 1;
                 int index = 0;
 
-                //FIXME-don't bother converting pixels off image edges
                 for ( int y = 0; y < w; y++ ) {
                     int ym = y ^ row_flip;
                     int yi = ym*cols;
@@ -276,7 +255,6 @@ public class LensBlurFilter extends AbstractBufferedImageOp {
                     }
                 }
 
-                // Clip to the output image
                 tx = tileX+iradius;
                 ty = tileY+iradius;
                 tw = tileWidth-2*iradius;
